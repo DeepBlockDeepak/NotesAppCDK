@@ -1,0 +1,23 @@
+# Compiled Python files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# saved models
+models/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Python-venv
+venv/
+*.venv
+env/
+
+# PyCharm
+.idea/
+*.iml
+
+# VSCode
+.vscode/
