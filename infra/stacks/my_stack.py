@@ -15,17 +15,17 @@ class MyStack(Stack):
         super().__init__(scope, id, **kwargs)
         # Example: define resources here (Lambda, S3, DynamoDB, etc.)
         # S3 bucket
-        # my_bucket = s3.Bucket(self, "MyNotesBucket")
+        my_bucket = s3.Bucket(self, "MyNotesBucket")
 
         # DynamoDB table
-        # notes_table = dynamodb.Table(
-        #     self,
-        #     "NotesTable",
-        #     partition_key=dynamodb.Attribute(
-        #         name="note_id",
-        #         type=dynamodb.AttributeType.STRING
-        #     )
-        # )
+        notes_table = dynamodb.Table(
+            self,
+            "NotesTable",
+            partition_key=dynamodb.Attribute(
+                name="note_id",
+                type=dynamodb.AttributeType.STRING
+            )
+        )
 
         # Lambda function
         # lambda_fn = _lambda.Function(
