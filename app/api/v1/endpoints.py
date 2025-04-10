@@ -1,19 +1,21 @@
-from fastapi import FastAPI, UploadFile, File, HTTPException
-from pydantic import BaseModel
-import boto3
 import os
 import uuid
 
+import boto3
+from fastapi import APIRouter, File, UploadFile
+
 from app.models.note_models import NoteModel
 
-app = FastAPI()
-dynamodb = boto3.resource("dynamodb") # stores the Note metadata (note ID, title, references to S3 object, maybe timestamps)
+router = APIRouter()
+dynamodb = boto3.resource(
+    "dynamodb"
+)  # stores the Note metadata (note ID, title, references to S3 object, maybe timestamps)
 table = dynamodb.Table(os.environ.get("DYNAMODB_TABLE", "NotesTable"))
-s3_client = boto3.client("s3") # stores the files
+s3_client = boto3.client("s3")  # stores the files
 bucket_name = os.environ.get("S3_BUCKET_NAME", "MyNotesBucket")
 
 
-@app.post("/notes")
+@router.post("/notes")
 def create_note(note: NoteModel, file: UploadFile = File(None)):
     """
      Creates a Note in DynamoDB (and a file attachment stored in S3).
@@ -34,17 +36,15 @@ def create_note(note: NoteModel, file: UploadFile = File(None)):
 
     item = {
         "note_id": note_id,
-        "title" : note.title,
+        "title": note.title,
         "content": note.content,
-        "s3_key": s3_key
+        "s3_key": s3_key,
     }
     table.put(Item=item)
-    
+
     return {"note_id": note_id, "s3_key": s3_key}
 
 
-
-
-@app.get("/ping")
+@router.get("/ping")
 def ping():
     return {"message": "pong"}

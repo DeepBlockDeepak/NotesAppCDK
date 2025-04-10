@@ -1,57 +1,83 @@
 import aws_cdk as cdk
+from aws_cdk import Duration, Stack
+from aws_cdk import aws_apigateway as apigw
+from aws_cdk import aws_dynamodb as dynamodb
+from aws_cdk import aws_iam as iam
+from aws_cdk import aws_lambda as _lambda
+from aws_cdk import aws_s3 as s3
 from constructs import Construct
-from aws_cdk import (
-    Stack,
-    aws_lambda as _lambda,
-    aws_apigateway as apigw,
-    aws_dynamodb as dynamodb,
-    aws_s3 as s3,
-    aws_iam as iam,
-    Duration
-)
+
 
 class MyStack(Stack):
     def __init__(self, scope: Construct, id: str, **kwargs):
         super().__init__(scope, id, **kwargs)
         # Example: define resources here (Lambda, S3, DynamoDB, etc.)
-        # S3 bucket
+        # S3 bucket for storing notes and attachments
         my_bucket = s3.Bucket(self, "MyNotesBucket")
 
-        # DynamoDB table
+        # DynamoDB table for Notes data
         notes_table = dynamodb.Table(
             self,
             "NotesTable",
             partition_key=dynamodb.Attribute(
-                name="note_id",
-                type=dynamodb.AttributeType.STRING
-            )
+                name="note_id", type=dynamodb.AttributeType.STRING
+            ),
         )
 
-        # Lambda function
-        # lambda_fn = _lambda.Function(
-        #     self,
-        #     "FastApiLambda",
-        #     runtime=_lambda.Runtime.PYTHON_3_9,
-        #     handler="main.app",         # if using Mangum do "main.lambda_handler"
-        #     code=_lambda.Code.from_asset("app/"),  # or from Docker build
-        #     environment={
-        #         "DYNAMODB_TABLE": notes_table.table_name,
-        #         "S3_BUCKET_NAME": my_bucket.bucket_name
-        #     },
-        #     timeout=Duration.seconds(30),
-        # )
+        # Lambda
+        lambda_fn = _lambda.DockerImageFunction(
+            self,
+            "FastApiLambda",
+            code=_lambda.DockerImageCode.from_image_asset(
+                directory=".",
+                file="Dockerfile",
+                platform=cdk.aws_ecr_assets.Platform.LINUX_AMD64,
+            ),
+            # architecture=_lambda.Architecture.X86_64,
+            environment={
+                "DYNAMODB_TABLE": notes_table.table_name,
+                "S3_BUCKET_NAME": my_bucket.bucket_name,
+            },
+            timeout=Duration.seconds(30),
+        )
 
         # Grant Lambda access to S3 and DynamoDB
-        # my_bucket.grant_read_write(lambda_fn)
-        # notes_table.grant_read_write_data(lambda_fn)
+        my_bucket.grant_read_write(lambda_fn)
+        notes_table.grant_read_write_data(lambda_fn)
 
-        # API Gateway (REST API) integrated with Lambda
-        # api = apigw.LambdaRestApi(
-        #     self,
-        #     "MyFastApiGateway",
-        #     handler=lambda_fn,
-        # )
+        # API Gateway -> route HTTP reqs to FastApiLambda
+        api = apigw.LambdaRestApi(
+            self,
+            "MyFastApiGateway",
+            handler=lambda_fn,
+        )
 
-        # Optionally output the API endpoint
-        # self.api_url = api.url
+        # API key
+        api_key = apigw.ApiKey(
+            self, "MyApiKey", api_key_name="MyKey", description="Used for my test stack"
+        )
 
+        # usage plan
+        usage_plan = apigw.UsagePlan(
+            self,
+            "UsagePlan",
+            name="BasicUsagePlan",
+            throttle=apigw.ThrottleSettings(rate_limit=10, burst_limit=2),
+        )
+
+        # attach plan to API + stage
+        usage_plan.add_api_stage(stage=api.deployment_stage, api=api)
+
+        # create a subresource for /notes
+        notes_resource = api.root.add_resource("notes")
+
+        # add a POST method to /notes that requires an API key
+        notes_resource.add_method(
+            "POST", apigw.LambdaIntegration(lambda_fn), api_key_required=True
+        )
+
+        # associate API key with usage plan
+        usage_plan.add_api_key(api_key)
+
+        # optionally output the API endpoint
+        self.api_url = api.url

@@ -1,15 +1,18 @@
-FROM python:3.9-slim
+FROM public.ecr.aws/lambda/python:3.9
 
-WORKDIR /app
+WORKDIR /var/task
 
 # Copy only lockfiles first so Docker can cache the layer if unchanged
-COPY pyproject.toml poetry.lock /app/
+COPY pyproject.toml poetry.lock ./
 
-# Install Poetry and dependencies
+# Install Poetry
 RUN pip install --no-cache-dir --upgrade pip && pip install --no-cache-dir poetry
-RUN poetry install --without dev --no-interaction --no-ansi --no-root
+# Configure Poetry so it doesn't use a separate virtualenv
+RUN poetry config virtualenvs.create false
+# Now install deps (which go to global Python site-packages)
+RUN poetry install --without dev --no-interaction --no-ansi --no-root && poetry run pip list
 
 # copy actual code (app/, infra/, etc.)
-COPY . /app
+COPY . .
 
-CMD ["poetry", "run", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["app.main.handler"]
