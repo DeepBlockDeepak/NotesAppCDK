@@ -15,8 +15,8 @@ models/
 # Python-venv
 venv/
 *.venv
-env/
-*.env/
+.env
+*.env
 
 # VSCode
 .vscode/
