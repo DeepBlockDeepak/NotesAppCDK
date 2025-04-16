@@ -16,7 +16,7 @@ models/
 venv/
 *.venv
 env/
-*.evn/
+*.env/
 
 # VSCode
 .vscode/
