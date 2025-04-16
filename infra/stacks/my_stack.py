@@ -11,8 +11,8 @@ from constructs import Construct
 class MyStack(Stack):
     def __init__(self, scope: Construct, id: str, **kwargs):
         super().__init__(scope, id, **kwargs)
-        # Example: define resources here (Lambda, S3, DynamoDB, etc.)
-        # S3 bucket for storing notes and attachments
+        
+        # S3 bucket - storing files
         my_bucket = s3.Bucket(self, "MyNotesBucket")
 
         # DynamoDB table for Notes data
@@ -41,7 +41,7 @@ class MyStack(Stack):
             timeout=Duration.seconds(30),
         )
 
-        # Grant Lambda access to S3 and DynamoDB
+        # grant Lambda access to S3 and DynamoDB
         my_bucket.grant_read_write(lambda_fn)
         notes_table.grant_read_write_data(lambda_fn)
 
@@ -79,5 +79,5 @@ class MyStack(Stack):
         # associate API key with usage plan
         usage_plan.add_api_key(api_key)
 
-        # optionally output the API endpoint
+        # output the API endpoint
         self.api_url = api.url

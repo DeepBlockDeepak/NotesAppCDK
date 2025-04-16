@@ -528,6 +528,20 @@ files = [
 ]
 
 [[package]]
+name = "mypy-boto3-dynamodb"
+version = "1.37.33"
+description = "Type annotations for boto3 DynamoDB 1.37.33 service generated with mypy-boto3-builder 8.10.1"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "mypy_boto3_dynamodb-1.37.33-py3-none-any.whl", hash = "sha256:3c0325a495b0487ef1dbd0aa6578d5892862b226461cdcda7d87cb48c20f1e8b"},
+    {file = "mypy_boto3_dynamodb-1.37.33.tar.gz", hash = "sha256:f924999d45fc23dd080b30b4d10498627220bf8d3f47824a513e43445b9ea02d"},
+]
+
+[package.dependencies]
+typing-extensions = {version = "*", markers = "python_version < \"3.12\""}
+
+[[package]]
 name = "mypy-extensions"
 version = "1.0.0"
 description = "Type system extensions for programs checked with the mypy type checker."
@@ -1029,4 +1043,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9"
-content-hash = "2932c2000b28c9949b7bbdb9129dc7e0ebcbae965a5d3fb0c28a2bd90a62f3a8"
+content-hash = "0bb8c83d453d66cf9aea8fed10216e1dc60edd4f093234786ce819cc2109b575"

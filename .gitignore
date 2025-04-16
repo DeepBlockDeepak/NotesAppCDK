@@ -12,17 +12,13 @@ cdk.out/
 # saved models
 models/
 
-# Jupyter Notebook
-.ipynb_checkpoints
-
 # Python-venv
 venv/
 *.venv
 env/
 
-# PyCharm
-.idea/
-*.iml
-
 # VSCode
 .vscode/
+
+# OS generated files
+.DS_Store

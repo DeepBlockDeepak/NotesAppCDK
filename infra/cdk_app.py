@@ -8,7 +8,7 @@ def main() -> None:
     app = cdk.App()
 
     # instantiate stack
-    MyStack(app, "MyStack")
+    MyStack(app, "MyTestStack")
 
     # synth the Cloud Assembly
     app.synth()
