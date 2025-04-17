@@ -33,7 +33,6 @@ class MyStack(Stack):
                 file="Dockerfile",
                 platform=cdk.aws_ecr_assets.Platform.LINUX_AMD64,
             ),
-            # architecture=_lambda.Architecture.X86_64,
             environment={
                 "DYNAMODB_TABLE": notes_table.table_name,
                 "S3_BUCKET_NAME": my_bucket.bucket_name,
