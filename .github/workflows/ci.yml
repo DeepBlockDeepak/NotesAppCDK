@@ -18,6 +18,13 @@ jobs:
       - name: Install Poetry
         run: pip install --no-cache-dir poetry
 
+
+      - name: Cache Poetry download cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pypoetry/cache
+          key: poetry-${{ runner.os }}-${{ hashFiles('**/poetry.lock') }}
+
       - name: Install project (+ dev deps)
         run: poetry install --with dev
 
