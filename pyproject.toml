@@ -5,6 +5,9 @@ description = ""
 authors = ["DeepBlockDeepak <jordan.medina1729@gmail.com>"]
 readme = "README.md"
 
+packages = [
+    { include="note_app", from = "src" }
+]
 
 [tool.poetry.dependencies]
 python = "^3.9"
