@@ -26,9 +26,7 @@ jobs:
           key: poetry-${{ runner.os }}-${{ hashFiles('**/poetry.lock') }}
 
       - name: Install project (+ dev deps)
-        run: poetry install --with dev --no-root
+        run: poetry install --with dev
 
       - name: Run pytest
         run: poetry run pytest -q
-        env:
-          PYTHONPATH: ${{ github.workspace }}

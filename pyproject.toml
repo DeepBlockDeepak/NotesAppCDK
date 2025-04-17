@@ -5,7 +5,10 @@ description = ""
 authors = ["DeepBlockDeepak <jordan.medina1729@gmail.com>"]
 readme = "README.md"
 
-packages = [{include="infra"}]
+packages = [
+    {include="infra"},
+    {include="app"},
+]
 
 [tool.poetry.dependencies]
 python = "^3.9"
