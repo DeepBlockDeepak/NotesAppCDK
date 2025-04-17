@@ -9,7 +9,7 @@ from boto3.resources.base import ServiceResource
 from fastapi import APIRouter, File, Form, HTTPException, UploadFile
 from mypy_boto3_dynamodb.service_resource import Table
 
-from note_app.models.note_models import NoteModel
+from models.note_models import NoteModel
 
 router = APIRouter()
 dynamodb = boto3.resource(
