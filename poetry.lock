@@ -54,13 +54,13 @@ tests-mypy = ["mypy (>=1.11.1)", "pytest-mypy-plugins"]
 
 [[package]]
 name = "aws-cdk-asset-awscli-v1"
-version = "2.2.231"
+version = "2.2.232"
 description = "A library that contains the AWS CLI for use in Lambda Layers"
 optional = false
 python-versions = "~=3.9"
 files = [
-    {file = "aws_cdk_asset_awscli_v1-2.2.231-py3-none-any.whl", hash = "sha256:06d6b1d9e52272c315b944320f7039b47c6a6058f063fa33ab0ec06fea17bfbe"},
-    {file = "aws_cdk_asset_awscli_v1-2.2.231.tar.gz", hash = "sha256:859d99e0fcdc2f6ada44090ad9f921743da3ca3a6d9f39ab06836d4c8e0fbc23"},
+    {file = "aws_cdk_asset_awscli_v1-2.2.232-py3-none-any.whl", hash = "sha256:0099d39dd74b466acbccf6a1bae4bf8081de05732727057b10a80b8a9b091908"},
+    {file = "aws_cdk_asset_awscli_v1-2.2.232.tar.gz", hash = "sha256:a5bd7d4c265ada09f9b95c392bcac7c95500e5d7ce192d1341ea9585d1b182b5"},
 ]
 
 [package.dependencies]
@@ -116,13 +116,13 @@ typeguard = ">=2.13.3,<4.3.0"
 
 [[package]]
 name = "aws-cdk-lib"
-version = "2.189.0"
+version = "2.190.0"
 description = "Version 2 of the AWS Cloud Development Kit library"
 optional = false
 python-versions = "~=3.9"
 files = [
-    {file = "aws_cdk_lib-2.189.0-py3-none-any.whl", hash = "sha256:0c991e67a6b03ee23b9fbf98358e89d9e298fc3b3fafb1def2fb79fa38551b94"},
-    {file = "aws_cdk_lib-2.189.0.tar.gz", hash = "sha256:10b5d5b07a9ef2bf831edb9d26c736ad87b186d3ae416c16e9cf1ca241d71c58"},
+    {file = "aws_cdk_lib-2.190.0-py3-none-any.whl", hash = "sha256:afc05f09f978b22167a4a6574e103f388b133955ee6b1592cb9536d30b2130b0"},
+    {file = "aws_cdk_lib-2.190.0.tar.gz", hash = "sha256:b7df7834ba9cd510248908b39cf025709cb660886924b1e7a79b93a921a6adb7"},
 ]
 
 [package.dependencies]
@@ -182,17 +182,17 @@ uvloop = ["uvloop (>=0.15.2)"]
 
 [[package]]
 name = "boto3"
-version = "1.37.31"
+version = "1.37.35"
 description = "The AWS SDK for Python"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "boto3-1.37.31-py3-none-any.whl", hash = "sha256:cf8997be0742a5cab9d33a138ef56e423a8ebd8881f6f73e95076b26656b36dc"},
-    {file = "boto3-1.37.31.tar.gz", hash = "sha256:dfee02b2f8f632a239a2f4ba6a2d568e2edd7f7464e9afd8a487fdb3fa9a0ad3"},
+    {file = "boto3-1.37.35-py3-none-any.whl", hash = "sha256:5a90d674830adbaf86456d6b27a18f5f11378277da5286511fa860d2e7b14261"},
+    {file = "boto3-1.37.35.tar.gz", hash = "sha256:751ed599c8fd9ca24896edcd6620e8a32b3db1b68efea3a90126312240e668a2"},
 ]
 
 [package.dependencies]
-botocore = ">=1.37.31,<1.38.0"
+botocore = ">=1.37.35,<1.38.0"
 jmespath = ">=0.7.1,<2.0.0"
 s3transfer = ">=0.11.0,<0.12.0"
 
@@ -201,13 +201,13 @@ crt = ["botocore[crt] (>=1.21.0,<2.0a0)"]
 
 [[package]]
 name = "botocore"
-version = "1.37.31"
+version = "1.37.35"
 description = "Low-level, data-driven core of boto 3."
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "botocore-1.37.31-py3-none-any.whl", hash = "sha256:598a33a7a0e5a014bd1416c999a0b9c634fbbba3d1363e2368e6a92da4544df4"},
-    {file = "botocore-1.37.31.tar.gz", hash = "sha256:eb3dfa44a87187bd82c3b493d568d8436270d4d000f237b49b669a01fcd8a21c"},
+    {file = "botocore-1.37.35-py3-none-any.whl", hash = "sha256:50839212e90650d0b0fa6b8f7514876bf802f6164f2775f3abcd4d53c98bb73c"},
+    {file = "botocore-1.37.35.tar.gz", hash = "sha256:197a9bf8251c45b9d882c405ec0d0ab40c10e2d2a55ee66960185daec4beb6ec"},
 ]
 
 [package.dependencies]
@@ -1402,13 +1402,13 @@ files = [
 
 [[package]]
 name = "starlette"
-version = "0.46.1"
+version = "0.46.2"
 description = "The little ASGI library that shines."
 optional = false
 python-versions = ">=3.9"
 files = [
-    {file = "starlette-0.46.1-py3-none-any.whl", hash = "sha256:77c74ed9d2720138b25875133f3a2dae6d854af2ec37dceb56aef370c1d8a227"},
-    {file = "starlette-0.46.1.tar.gz", hash = "sha256:3c88d58ee4bd1bb807c0d1acb381838afc7752f9ddaec81bbe4383611d833230"},
+    {file = "starlette-0.46.2-py3-none-any.whl", hash = "sha256:595633ce89f8ffa71a015caed34a5b2dc1c0cdb3f0f1fbd1e69339cf2abeec35"},
+    {file = "starlette-0.46.2.tar.gz", hash = "sha256:7f7361f34eed179294600af672f565727419830b54b7b084efe44bb82d2fccd5"},
 ]
 
 [package.dependencies]
@@ -1534,13 +1534,13 @@ zstd = ["zstandard (>=0.18.0)"]
 
 [[package]]
 name = "uvicorn"
-version = "0.34.0"
+version = "0.34.1"
 description = "The lightning-fast ASGI server."
 optional = false
 python-versions = ">=3.9"
 files = [
-    {file = "uvicorn-0.34.0-py3-none-any.whl", hash = "sha256:023dc038422502fa28a09c7a30bf2b6991512da7dcdb8fd35fe57cfc154126f4"},
-    {file = "uvicorn-0.34.0.tar.gz", hash = "sha256:404051050cd7e905de2c9a7e61790943440b3416f49cb409f965d9dcd0fa73e9"},
+    {file = "uvicorn-0.34.1-py3-none-any.whl", hash = "sha256:984c3a8c7ca18ebaad15995ee7401179212c59521e67bfc390c07fa2b8d2e065"},
+    {file = "uvicorn-0.34.1.tar.gz", hash = "sha256:af981725fc4b7ffc5cb3b0e9eda6258a90c4b52cb2a83ce567ae0a7ae1757afc"},
 ]
 
 [package.dependencies]
