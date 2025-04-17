@@ -8,6 +8,7 @@ readme = "README.md"
 packages = [
     {include="infra"},
     {include="note_app"},
+    {include="models", from="note_app"},
 ]
 
 [tool.poetry.dependencies]
