@@ -1,13 +1,14 @@
 # tests/test_notes_endpoints.py
 import json
 import uuid
+
 import boto3
 import pytest
 from fastapi.testclient import TestClient
 from moto import mock_aws
 
+from note_app.main import app
 
-from app.main import app
 
 @pytest.fixture(autouse=True)
 def _env(monkeypatch):
@@ -29,8 +30,11 @@ def _client():
         ProvisionedThroughput={"ReadCapacityUnits": 5, "WriteCapacityUnits": 5},
     )
     s3 = boto3.client("s3", region_name="us-west-2")
-    s3.create_bucket(Bucket="MyNotesBucket", CreateBucketConfiguration={"LocationConstraint": "us-west-2"},)
-    
+    s3.create_bucket(
+        Bucket="MyNotesBucket",
+        CreateBucketConfiguration={"LocationConstraint": "us-west-2"},
+    )
+
     return TestClient(app)
 
 

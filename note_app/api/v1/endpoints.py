@@ -1,15 +1,15 @@
 import json
 import os
-from typing import Any, Optional
 import uuid
+from functools import lru_cache
+from typing import Any, Optional
 
 import boto3
 from boto3.resources.base import ServiceResource
-from functools import lru_cache
-from mypy_boto3_dynamodb.service_resource import Table
 from fastapi import APIRouter, File, Form, HTTPException, UploadFile
+from mypy_boto3_dynamodb.service_resource import Table
 
-from app.models.note_models import NoteModel
+from note_app.models.note_models import NoteModel
 
 router = APIRouter()
 dynamodb = boto3.resource(
@@ -40,6 +40,7 @@ class AWSClientFactory:
         table_name = os.environ["DYNAMODB_TABLE"]
         return self.dynamodb_resource.Table(table_name)
 
+
 @lru_cache()
 def get_aws_factory() -> AWSClientFactory:
     return AWSClientFactory()
@@ -53,7 +54,7 @@ def create_note(note_str: str = Form(...), file: UploadFile = File(None)):
     Returns:
         dict: Successful message (consider a validation model)
     """
-    # validate the input note-json body 
+    # validate the input note-json body
     note_dict = json.loads(note_str)
     note = NoteModel(**note_dict)
 

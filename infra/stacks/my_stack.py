@@ -2,7 +2,6 @@ import aws_cdk as cdk
 from aws_cdk import Duration, Stack
 from aws_cdk import aws_apigateway as apigw
 from aws_cdk import aws_dynamodb as dynamodb
-from aws_cdk import aws_iam as iam
 from aws_cdk import aws_lambda as _lambda
 from aws_cdk import aws_s3 as s3
 from constructs import Construct
@@ -11,7 +10,7 @@ from constructs import Construct
 class MyStack(Stack):
     def __init__(self, scope: Construct, id: str, **kwargs):
         super().__init__(scope, id, **kwargs)
-        
+
         # S3 bucket - storing files
         my_bucket = s3.Bucket(self, "MyNotesBucket")
 
