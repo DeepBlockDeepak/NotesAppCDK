@@ -18,13 +18,6 @@ jobs:
       - name: Install Poetry
         run: pip install --no-cache-dir poetry
 
-      # cache for poetry’s virtual‑env
-      - name: Cache Poetry venv
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/pypoetry/virtualenvs
-          key: poetry-${{ runner.os }}-${{ hashFiles('**/poetry.lock', '**/pyproject.toml') }}
-
       - name: Install project (+ dev deps)
         run: poetry install --with dev
 
