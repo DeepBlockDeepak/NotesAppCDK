@@ -12,4 +12,4 @@ RUN poetry install --without dev --no-interaction --no-ansi --no-root && poetry 
 
 COPY . .
 
-CMD ["app.main.handler"]
+CMD ["src.note_app.main.handler"]

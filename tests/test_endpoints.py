@@ -7,7 +7,7 @@ import pytest
 from fastapi.testclient import TestClient
 from moto import mock_aws
 
-from note_app.main import app
+from src.note_app.main import app
 
 
 @pytest.fixture(autouse=True)
