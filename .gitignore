@@ -9,9 +9,6 @@ cdk.context.json
 .cdk.staging/
 cdk.out/
 
-# saved models
-models/
-
 # Python-venv
 venv/
 *.venv
