@@ -16,14 +16,14 @@ Tiny serverless toy project for file uploads ("Notes"):
 
 1. clone & install
 ```bash
-git clone https://github.com/<you>/note-app.git
+git clone https://github.com/DeepBlockDeepak/NotesAppCDK.git
 cd note-app
 poetry install --with dev
 ```
 
 2. run FastAPI locally (no AWS calls)
 ```bash
-poetry run uvicorn app.main:app --port 8000
+poetry run uvicorn note_app.main:app --port 8000
 ```
 
 3. open http://127.0.0.1:8000/docs
