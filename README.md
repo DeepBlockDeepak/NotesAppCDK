@@ -25,6 +25,11 @@ poetry install --with dev
 ```bash
 poetry run uvicorn note_app.main:app --port 8000
 ```
+Ping the test endpoint:
+```bash
+curl http://127.0.0.1:8000/api/v1/ping
+# {"message":"pong"}
+```
 
 3. open http://127.0.0.1:8000/docs
 

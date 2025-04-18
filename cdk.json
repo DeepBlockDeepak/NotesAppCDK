@@ -1,3 +1,3 @@
 {
-  "app": "poetry run python infra/cdk_app.py"
+  "app": "poetry run python -m infra.cdk_app"
 }

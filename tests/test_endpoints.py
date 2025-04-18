@@ -17,7 +17,6 @@ def _env(monkeypatch):
     yield
 
 
-
 def _client():
     """
     Spin up moto mocks + create table/bucket, then return a TestClient.
