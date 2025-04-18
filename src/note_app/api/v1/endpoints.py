@@ -1,7 +1,7 @@
 import json
 import os
 import uuid
-from functools import lru_cache
+from functools import cache
 from typing import Any, Optional
 
 import boto3
@@ -19,7 +19,7 @@ class AWSClientFactory:
         self.region = region or os.environ.get("AWS_REGION") or "us-west-2"
 
     @property
-    @lru_cache()
+    @cache
     def s3(self) -> Any:
         return boto3.client("s3", region_name=self.region)
 
@@ -28,7 +28,7 @@ class AWSClientFactory:
         return os.environ["S3_BUCKET_NAME"]
 
     @property
-    @lru_cache()
+    @cache
     def dynamodb_resource(self) -> ServiceResource:
         return boto3.resource("dynamodb", region_name=self.region)
 
@@ -38,7 +38,7 @@ class AWSClientFactory:
         return self.dynamodb_resource.Table(table_name)
 
 
-@lru_cache()
+@cache
 def get_aws_factory() -> AWSClientFactory:
     return AWSClientFactory()
 
