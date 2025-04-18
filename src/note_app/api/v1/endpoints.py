@@ -21,7 +21,7 @@ class AWSClientFactory:
     @property
     @lru_cache()
     def s3(self) -> Any:
-        return boto3.client("s3")
+        return boto3.client("s3", region_name=self.region)
 
     @property
     def bucket_name(self) -> str:
@@ -30,7 +30,7 @@ class AWSClientFactory:
     @property
     @lru_cache()
     def dynamodb_resource(self) -> ServiceResource:
-        return boto3.resource("dynamodb")
+        return boto3.resource("dynamodb", region_name=self.region)
 
     @property
     def notes_table(self) -> Table:
