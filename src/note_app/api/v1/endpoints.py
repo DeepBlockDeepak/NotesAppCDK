@@ -6,21 +6,14 @@ from typing import Any, Optional
 
 import boto3
 from boto3.resources.base import ServiceResource
-from fastapi import APIRouter, File, Form, HTTPException, UploadFile
+from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile
 from mypy_boto3_dynamodb.service_resource import Table
 
 from models.note_models import NoteModel
 
 router = APIRouter()
-dynamodb = boto3.resource(
-    "dynamodb"
-)  # stores the Note metadata (note ID, title, references to S3 object, maybe timestamps)
-table = dynamodb.Table(os.environ.get("DYNAMODB_TABLE", "NotesTable"))
-s3_client = boto3.client("s3")  # stores the files
-bucket_name = os.environ.get("S3_BUCKET_NAME", "MyNotesBucket")
 
 
-# @NOTE: future class for dependency injecting the clients
 class AWSClientFactory:
     def __init__(self, region: Optional[str] = None):
         self.region = region or os.environ.get("AWS_REGION") or "us-west-2"
@@ -28,12 +21,16 @@ class AWSClientFactory:
     @property
     @lru_cache()
     def s3(self) -> Any:
-        return boto3.client("s3", region_name=self.region)
+        return boto3.client("s3")
+
+    @property
+    def bucket_name(self) -> str:
+        return os.environ["S3_BUCKET_NAME"]
 
     @property
     @lru_cache()
     def dynamodb_resource(self) -> ServiceResource:
-        return boto3.resource("dynamodb", region_name=self.region)
+        return boto3.resource("dynamodb")
 
     @property
     def notes_table(self) -> Table:
@@ -47,7 +44,11 @@ def get_aws_factory() -> AWSClientFactory:
 
 
 @router.post("/notes")
-def create_note(note_str: str = Form(...), file: UploadFile = File(None)):
+def create_note(
+    note_str: str = Form(...),
+    file: UploadFile = File(None),
+    aws: AWSClientFactory = Depends(get_aws_factory),
+):
     """
     Creates a Note in DynamoDB (and a file attachment stored in S3).
 
@@ -63,7 +64,7 @@ def create_note(note_str: str = Form(...), file: UploadFile = File(None)):
 
     if file:
         s3_key = f"notes/{note_id}/{file.filename}"
-        s3_client.upload_fileobj(file.file, bucket_name, s3_key)
+        aws.s3.upload_fileobj(file.file, aws.bucket_name, s3_key)
 
     item = {
         "note_id": note_id,
@@ -71,14 +72,14 @@ def create_note(note_str: str = Form(...), file: UploadFile = File(None)):
         "content": note.content,
         "s3_key": s3_key,
     }
-    table.put_item(Item=item)
+    aws.notes_table.put_item(Item=item)
 
     return {"note_id": note_id, "s3_key": s3_key}
 
 
 @router.get("/notes/{note_id}")
-def get_note(note_id: str):
-    resp = table.get_item(Key={"note_id": note_id})
+def get_note(note_id: str, aws: AWSClientFactory = Depends(get_aws_factory)):
+    resp = aws.notes_table.get_item(Key={"note_id": note_id})
     item = resp.get("Item")
     if not item:
         raise HTTPException(status_code=404, detail="Note not found")
