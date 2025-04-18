@@ -7,6 +7,7 @@ import pytest
 from fastapi.testclient import TestClient
 from moto import mock_aws
 
+from note_app.main import app
 
 @pytest.fixture(autouse=True)
 def _env(monkeypatch):
@@ -15,8 +16,6 @@ def _env(monkeypatch):
     monkeypatch.setenv("S3_BUCKET_NAME", "MyNotesBucket")
     yield
 
-
-from note_app.main import app
 
 
 def _client():
