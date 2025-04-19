@@ -98,3 +98,43 @@ def test_create_note_with_file() -> None:
     s3 = boto3.client("s3")
     objs = s3.list_objects_v2(Bucket="MyNotesBucket", Prefix=body["s3_key"])
     assert objs.get("KeyCount", 0) == 1, "Uploaded file not found in mocked S3!"
+
+
+@mock_aws
+def test_get_note_found() -> None:
+    """
+    Successfully fetch a previously created note.
+    """
+    client = _client()
+
+    # insert a note into the mocked dDB table
+    note_id = str(uuid.uuid4())
+    item = {
+        "note_id": note_id,
+        "title": "Hello from Postman",
+        "content": "Another dummyfile!",
+        "s3_key": f"notes/{note_id}/dummyfile.txt",
+    }
+    dynamodb = boto3.resource("dynamodb", region_name="us-west-2")
+    table = dynamodb.Table("NotesTable")
+    table.put_item(Item=item)
+
+    response = client.get(f"api/v1/notes/{note_id}")
+
+    # asser status code + payload match
+    assert response.status_code == 200
+    assert response.json() == item
+
+
+@mock_aws
+def test_get_note_not_found() -> None:
+    """
+    Requesting an unknown note_id yields 404 Not Found.
+    """
+    client = _client()
+    unknown_id = str(uuid.uuid4())
+
+    response = client.get(f"api/v1/notes/{unknown_id}")
+
+    assert response.status_code == 404
+    assert response.json()["detail"] == "Note not found"
