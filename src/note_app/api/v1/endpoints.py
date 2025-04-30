@@ -47,7 +47,7 @@ def get_aws_factory() -> AWSClientFactory:
 def create_note(
     note_str: str = Form(...),
     file: UploadFile = File(None),
-    aws: AWSClientFactory = Depends(get_aws_factory),
+    aws_client: AWSClientFactory = Depends(get_aws_factory),
 ):
     """
     Creates a Note in DynamoDB (and a file attachment stored in S3).
@@ -64,7 +64,7 @@ def create_note(
 
     if file:
         s3_key = f"notes/{note_id}/{file.filename}"
-        aws.s3.upload_fileobj(file.file, aws.bucket_name, s3_key)
+        aws_client.s3.upload_fileobj(file.file, aws_client.bucket_name, s3_key)
 
     item = {
         "note_id": note_id,
@@ -72,14 +72,14 @@ def create_note(
         "content": note.content,
         "s3_key": s3_key,
     }
-    aws.notes_table.put_item(Item=item)
+    aws_client.notes_table.put_item(Item=item)
 
     return {"note_id": note_id, "s3_key": s3_key}
 
 
 @router.get("/notes/{note_id}")
-def get_note(note_id: str, aws: AWSClientFactory = Depends(get_aws_factory)):
-    resp = aws.notes_table.get_item(Key={"note_id": note_id})
+def get_note(note_id: str, aws_client: AWSClientFactory = Depends(get_aws_factory)):
+    resp = aws_client.notes_table.get_item(Key={"note_id": note_id})
     item = resp.get("Item")
     if not item:
         raise HTTPException(status_code=404, detail="Note not found")
