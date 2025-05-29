@@ -6,6 +6,7 @@ import pytest
 from fastapi.testclient import TestClient
 from moto import mock_aws
 
+from models.note_models import NoteCreated, NoteDB, NoteOut
 from note_app.main import app
 
 
@@ -64,15 +65,12 @@ def test_create_note_json_only():
     files = {"note_str": (None, json.dumps(payload), "application/json")}
 
     response = client.post("api/v1/notes", files=files)
-    assert response.status_code == 200
+    assert response.status_code == 201
 
-    body = response.json()
-
-    # validate that the note UUID is syntactically correct; ValueError if bad
-    uuid.UUID(body["note_id"])
-
+    # validates that the note UUID is syntactically correct; ValueError if bad
+    note_created = NoteCreated.model_validate(response.json())
     # no file was uploaded so the endpoint doesn't create an s3 key
-    assert body["s3_key"] is None
+    assert note_created.s3_key is None
 
 
 @mock_aws
@@ -89,14 +87,14 @@ def test_create_note_with_file() -> None:
     ]
 
     response = client.post("api/v1/notes", files=files)
-    assert response.status_code == 200
+    assert response.status_code == 201
 
-    body = response.json()
-    assert body["s3_key"].startswith("notes/")
+    note_created = NoteCreated.model_validate(response.json())
+    assert note_created.s3_key.startswith("notes/")
 
     # verify S3 object existence inside the moto mock
     s3 = boto3.client("s3")
-    objs = s3.list_objects_v2(Bucket="MyNotesBucket", Prefix=body["s3_key"])
+    objs = s3.list_objects_v2(Bucket="MyNotesBucket", Prefix=note_created.s3_key)
     assert objs.get("KeyCount", 0) == 1, "Uploaded file not found in mocked S3!"
 
 
@@ -109,21 +107,25 @@ def test_get_note_found() -> None:
 
     # insert a note into the mocked dDB table
     note_id = str(uuid.uuid4())
-    item = {
-        "note_id": note_id,
-        "title": "Hello from Postman",
-        "content": "Another dummyfile!",
-        "s3_key": f"notes/{note_id}/dummyfile.txt",
-    }
+    note_db = NoteDB(
+        note_id=note_id,
+        title="Hello from Postman",
+        content="Another dummyfile!",
+        s3_key=f"notes/{note_id}/dummyfile.txt",
+    )
     dynamodb = boto3.resource("dynamodb", region_name="us-west-2")
     table = dynamodb.Table("NotesTable")
-    table.put_item(Item=item)
+    table.put_item(Item=note_db.model_dump())
 
     response = client.get(f"api/v1/notes/{note_id}")
-
-    # asser status code + payload match
+    # assert status code
     assert response.status_code == 200
-    assert response.json() == item
+
+    # validate the NoteOut model
+    note_out = NoteOut.model_validate(response.json())
+
+    # dict types ... they should be equivalent here
+    assert response.json() == note_db.model_dump()
 
 
 @mock_aws
@@ -132,9 +134,11 @@ def test_get_note_not_found() -> None:
     Requesting an unknown note_id yields 404 Not Found.
     """
     client = _client()
+    # novel/unknown id that can't be in DB
     unknown_id = str(uuid.uuid4())
 
     response = client.get(f"api/v1/notes/{unknown_id}")
 
+    # endpoint get_note raises a HTTPException(status_code=404, detail="Note not found")
     assert response.status_code == 404
     assert response.json()["detail"] == "Note not found"
