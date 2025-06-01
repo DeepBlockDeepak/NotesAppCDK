@@ -1,3 +1,5 @@
+from typing import Optional
+
 from pydantic import UUID4, BaseModel, Field
 
 
@@ -33,7 +35,7 @@ class NoteCreated(BaseModel):
     """
 
     note_id: UUID4
-    s3_key: str | None = None
+    s3_key: Optional[str] = None
 
 
 class NoteOut(NoteBase):
@@ -42,7 +44,7 @@ class NoteOut(NoteBase):
     """
 
     note_id: UUID4
-    s3_key: str | None = None
+    s3_key: Optional[str] = None
 
 
 class NoteDB(NoteOut):
