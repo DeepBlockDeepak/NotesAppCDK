@@ -106,10 +106,9 @@ def get_note(
     if not item:
         raise HTTPException(status_code=404, detail="Note not found")
 
-    # validate the returned NoteDB from dynamoDB
+    # validate the returned NoteDB from dynamoDB internally
     note_db = NoteDB.model_validate(item)
-
-    return NoteOut.model_validate(item)
+    return NoteOut(**note_db.model_dump())
 
 
 @router.get("/ping")

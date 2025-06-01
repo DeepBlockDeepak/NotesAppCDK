@@ -121,11 +121,11 @@ def test_get_note_found() -> None:
     # assert status code
     assert response.status_code == 200
 
-    # validate the NoteOut model
-    note_out = NoteOut.model_validate(response.json())
+    # API should return the public view of the note_db that was sent to Dynamo
+    expected_note_out = NoteOut(**note_db.model_dump())
+    actual_note_out   = NoteOut.model_validate(response.json())
 
-    # dict types ... they should be equivalent here
-    assert response.json() == note_db.model_dump()
+    assert actual_note_out == expected_note_out     
 
 
 @mock_aws
